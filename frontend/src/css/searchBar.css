@@ -1,0 +1,25 @@
+
+.search_bar {
+    display: flex;
+    align-items: center;
+    border: 1px solid #DDDDDD;
+    width: 300px;
+    border-radius: 10px;
+    padding: 5px 7px;
+  }
+  
+  .search_icon {
+    width: 18px;
+    color: grey;
+  }
+  
+  input[type="search"] {
+    width: 265px;
+  }
+  
+  input[type="search"],
+  input[type="search"]:focus {
+    border: none;
+    outline: none;
+  }
+  

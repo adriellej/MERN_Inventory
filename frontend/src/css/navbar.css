@@ -1,0 +1,19 @@
+/* side navigation bar */
+.navbar_main_container {
+    background-color: #0B2C82;
+    height: 100vh;
+    padding: 10px;
+  }
+  
+  .navbar_links a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  
+  /* .navbar_links{
+    text-align: center;
+    width: 22px;
+    height: 100vh;
+    position: relative;
+  } */
+  
