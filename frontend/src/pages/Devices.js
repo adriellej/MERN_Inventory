@@ -1,80 +1,144 @@
-import "../css/devices.css"
-
-import { useContext, useEffect } from "react";
-import { DevicesContext } from "../context/DevicesContext"
-
-// Import components and icons
+import "../css/devices.css";
+import { useContext, useEffect, useState } from "react";
+import { DevicesContext } from "../context/DevicesContext";
 import SearchBar from "../components/SearchBar";
-import DeviceDetails from "../components/DeviceDetails"
+import DeviceDetails from "../components/DeviceDetails";
+import DeviceForm from "../components/DeviceForm";
 
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { PlusIcon } from "@heroicons/react/24/outline";
-
-
+import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 const Devices = () => {
     const { devices, dispatch } = useContext(DevicesContext);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedDeviceIds, setSelectedDeviceIds] = useState([]);
+
+    const handleDelete = async () => {
+        try {
+            const promises = selectedDeviceIds.map(async deviceId => {
+                const response = await fetch(`/api/inventory/${deviceId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                const json = await response.json();
+    
+                if (response.ok) {
+                    return deviceId; // Return the deleted device ID
+                } else {
+                    console.error('Failed to delete goal:', json);
+                    return null;
+                }
+            });
+    
+            await Promise.all(promises);
+    
+            setSelectedDeviceIds([]); // Clear selected device IDs after deletion
+        } catch (error) {
+            console.error('Error deleting device:', error);
+        }
+    };
+    
 
     useEffect(() => {
         const fetchDevices = async () => {
             try {
-                const response = await fetch('/api/inventory/')
+                const response = await fetch('/api/inventory/');
                 if (!response.ok) {
                     throw new Error('Failed to fetch devices');
                 }
                 
                 const json = await response.json();
-                // Dispatching action to set goals in the context
-                dispatch({type: 'SET_DEVICES', payload: json})
+                dispatch({type: 'SET_DEVICES', payload: json});
             } catch (error) {
                 console.error('Error fetching devices:', error);
             }
         }
     
-        fetchDevices()
-    }, [dispatch])
+        fetchDevices();
+    }, [dispatch]);
+
+
+    const toggleModal = () => {
+        setShowModal(!showModal); // Toggle modal visibility
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    const handleCheckboxChange = (deviceId) => {
+        setSelectedDeviceIds(prevState => {
+            if (prevState.includes(deviceId)) {
+                return prevState.filter(id => id !== deviceId);
+            } else {
+                return [...prevState, deviceId];
+            }
+        });
+    };
 
     return (
         <div className="devices">
             <div className="main_container">
-
-                {/* Header */}
                 <div className="container">
                     <div className="header">
                         <div className="top_header">
                             <h1>Inventory List</h1>
-
                             <div className="header_functions">
-                                <button className="icon">
+                                <button className="icon" onClick={handleDelete}>
                                     <TrashIcon /> 
                                 </button>
-                                <button className="icon">
+                                <button className="icon" onClick={toggleModal}>
                                     <PlusIcon />
                                 </button>
                             </div>
-                        </div> 
-
-                        {/* Search Bar */}
+                        </div>
                         <div>
                             <SearchBar />
-                        </div>                   
+                        </div>
                     </div>
                 </div>
-                
-
-                {/* List */}
                 <div className="container">
                     <div className="device_list_container">
-                        {devices && devices.map(device => (
-                            <DeviceDetails key={device._id} device={device} />
-                        ))}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>In-Use</th>
+                                    <th>Current Owner</th>
+                                    <th>Serial Number</th>
+                                    <th>Brand</th>
+                                    <th>Issued Date</th>
+                                    <th>Company</th>
+                                    <th>Department</th>
+                                    <th>Model</th>
+                                    <th>Processor</th>
+                                    <th>RAM</th>
+                                    <th>Storage</th>
+                                    <th>Purchased Date</th>
+                                    <th>Accounts</th>
+                                    <th>Notes</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {devices && devices.map(device => (
+                                    <DeviceDetails 
+                                        key={device._id} 
+                                        device={device} 
+                                        onCheckboxChange={handleCheckboxChange} 
+                                        isChecked={selectedDeviceIds.includes(device._id)}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                </div>  
+                </div>
             </div>
+            <DeviceForm showModal={showModal} onClose={closeModal} />
         </div>
-        
-    )
+    );
 }
-
 
 export default Devices;

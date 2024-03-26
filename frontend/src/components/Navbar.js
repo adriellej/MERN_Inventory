@@ -1,31 +1,33 @@
 import "../css/navbar.css";
 import { Link } from 'react-router-dom';
-
-// import { ArrowRightStartOnRectangleIcon} from '@heroicons/react/outline';
-import { PencilSquareIcon } from '@heroicons/react/24/outline';
-
+import { HomeIcon, ComputerDesktopIcon, ClockIcon, UserCircleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
 
 const Navbar = () => {
     return (
         <div className="navbar_main_container">
             <div className='navbar_links'>
-                <Link>Home</Link><br/>
-                <Link>Devices</Link><br/>
-                <Link>Asset History</Link><br/>
-                <Link>Logout</Link><br/>
-
-                {/* <Link >
-                    <span className='nav_icon'><PencilSquareIcon /></span>
-                </Link>
-
                 <Link>
-                    <span className='nav_icon logout_icon'><PencilSquareIcon /></span>
-                </Link> */}
+                    <HomeIcon className="nav_icon" title="Home"/>
+                </Link><br/>
+                <Link >
+                    <ComputerDesktopIcon className="nav_icon" title="Inventory"/>
+                </Link><br/>
+                <Link >
+                    <ClockIcon className="nav_icon" title="Asset History"/>
+                </Link><br/>
+
+                <div className="bottom_icons">
+                    {/* Account will be an avatar and contains logout button as dropdown */}
+                    <Link>
+                        <UserCircleIcon className="nav_icon" title="Account"/>
+                    </Link>
+                    <Link>
+                        <ArrowRightStartOnRectangleIcon className="nav_icon" title="Logout"/>
+                    </Link>
+                </div>
             </div>
-                
         </div>
     )
 }
-
 
 export default Navbar;

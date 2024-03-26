@@ -68,4 +68,12 @@ const inventorySchema = new mongoose.Schema(
     }
 )
 
+// Modifying toJSON method to format dates in ISO format
+inventorySchema.methods.toJSON = function() {
+    const inventoryObject = this.toObject();
+    inventoryObject.issuedDateToCurrentOwner = this.issuedDateToCurrentOwner.toISOString().split('T')[0];
+    inventoryObject.purchasedDate = this.purchasedDate.toISOString().split('T')[0];
+    return inventoryObject;
+};
+
 module.exports = new mongoose.model('Inventory', inventorySchema)

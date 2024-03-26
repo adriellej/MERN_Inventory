@@ -1,19 +1,31 @@
 /* side navigation bar */
 .navbar_main_container {
-    background-color: #0B2C82;
-    height: 100vh;
-    padding: 10px;
-  }
-  
-  .navbar_links a {
-    color: #ffffff;
-    text-decoration: none;
-  }
-  
-  /* .navbar_links{
-    text-align: center;
-    width: 22px;
-    height: 100vh;
-    position: relative;
-  } */
-  
+  background-color: #0B2C82;
+  height: 100vh;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  align-items: center;
+  position: relative; 
+
+}
+
+.navbar_links a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.nav_icon {
+  width: 32px;
+  margin-bottom: 15px;
+}
+
+.bottom_icons {
+  position: absolute;
+  bottom: 0; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
