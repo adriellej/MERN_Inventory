@@ -1,4 +1,6 @@
 /* side navigation bar */
+.navigation_bar {}
+
 .navbar_main_container {
   background-color: #0B2C82;
   height: 100vh;
@@ -7,8 +9,9 @@
   flex-direction: column;
   justify-content: space-between; 
   align-items: center;
-  position: relative; 
-
+  position: fixed; 
+  border: 1px solid;
+  width: auto;
 }
 
 .navbar_links a {

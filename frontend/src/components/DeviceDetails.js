@@ -14,7 +14,6 @@ const DeviceDetails = ({device, onCheckboxChange, isChecked}) => {
 
     return (
         <>
-                
             <tr>
                 <td>
                     <input 

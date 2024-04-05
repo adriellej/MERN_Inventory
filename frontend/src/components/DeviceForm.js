@@ -1,11 +1,11 @@
 import "../css/deviceForm.css";
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import { DevicesContext } from '../context/DevicesContext';
 
-const DeviceForm = ({ showModal, onClose }) => {
-    const { dispatch } = useContext(DevicesContext);
+const DeviceForm = ({ showModal, onClose, updateMode, deviceToUpdate  }) => {
+    const { devices, dispatch } = useContext(DevicesContext);
 
     const [inUse, setInUse] = useState(false);
     const [currentOwner, setCurrentOwner] = useState('');
@@ -23,11 +23,33 @@ const DeviceForm = ({ showModal, onClose }) => {
     const [notes, setNotes] = useState('');
     const [remarks, setRemarks] = useState('');
 
-    // Function to handle form submission
+    console.log(updateMode)
+    //console.log('device_id_inform:', deviceToUpdate)
+    useEffect(() => {
+        if (updateMode && deviceToUpdate) {
+            setInUse(deviceToUpdate.inUse);
+            setCurrentOwner(deviceToUpdate.currentOwner);
+            setSerialNumber(deviceToUpdate.serialNumber);
+            setBrand(deviceToUpdate.brand);
+            setIssuedDateToCurrentOwner(deviceToUpdate.issuedDateToCurrentOwner);
+            setCompany(deviceToUpdate.company);
+            setDepartment(deviceToUpdate.department);
+            setModel(deviceToUpdate.model);
+            setProcessor(deviceToUpdate.processor);
+            setRAM(deviceToUpdate.ram);
+            setStorage(deviceToUpdate.storage);
+            setPurchasedDate(deviceToUpdate.purchasedDate);
+            setAccounts(deviceToUpdate.accounts);
+            setNotes(deviceToUpdate.notes);
+            setRemarks(deviceToUpdate.remarks);
+        } else {
+            resetFormFields();
+        }
+    }, [updateMode, deviceToUpdate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Creating a device object from form data
         const device = {
             inUse,
             currentOwner,
@@ -46,32 +68,35 @@ const DeviceForm = ({ showModal, onClose }) => {
             remarks,
         };
 
-        // Sending POST request to create a new device
-        const response = await fetch('/api/inventory/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(device),
-        });
+        let response;
+        if (updateMode && deviceToUpdate) {
+            response = await fetch(`/api/inventory/${deviceToUpdate._id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(device),
+            });
+        } else {
+            response = await fetch('/api/inventory/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(device),
+            });
+        }
 
-        // Parsing response JSON
         const json = await response.json();
-
-        // Handling errors
         if (!response.ok) {
             alert(json.error);
+            return;
         }
 
-        // If successful, reset form fields, dispatch action to create device, and close the modal
-        if (response.ok) {
-            resetFormFields();
-            dispatch({type: 'CREATE_DEVICE', payload: json});
-            onClose(); // Close the modal
-        }
+        dispatch({ type: updateMode ? 'UPDATE_DEVICE' : 'CREATE_DEVICE', payload: json });
+        onClose(); // Close the modal
     };
 
-    // Function to reset form fields to initial values
     const resetFormFields = () => {
         setInUse(false);
         setCurrentOwner('');
@@ -95,31 +120,34 @@ const DeviceForm = ({ showModal, onClose }) => {
             {showModal && (
                 <div className="modal_container">
                     <div className="modal_content">
+                            
                         <div className="form_header">
-                            <h1>New Item</h1>
+                            <h1>{updateMode === true && deviceToUpdate ? 'Update Item' : 'New Item'}</h1>
                             <button onClick={onClose}>Close</button>
                         </div>
+
                         <div className="form_content">
                             <form className="form" onSubmit={handleSubmit}>
-                            <label htmlFor="inUse">In-Use?</label>
-                            <span>
-                            <input 
-                                type="radio" 
-                                name="inUse" 
-                                value="true"
-                                checked={inUse === true}
-                                onChange={(e) => setInUse(true)}
-                            />Yes
-                            <input 
-                                type="radio" 
-                                name="inUse" 
-                                value="false"
-                                checked={inUse === false}
-                                onChange={(e) => setInUse(false)}
-                            />No
-                            </span>
-                            
-                            <br />
+                                <label htmlFor="inUse">In-Use?</label>
+                                <span>
+                                <input 
+                                    type="radio" 
+                                    name="inUse" 
+                                    value="true"
+                                    checked={inUse === true}
+                                    onChange={(e) => setInUse(true)}
+                                />Yes
+                                <input 
+                                    type="radio" 
+                                    name="inUse" 
+                                    value="false"
+                                    checked={inUse === false}
+                                    onChange={(e) => setInUse(false)}
+                                    selected
+                                />No
+                                </span>
+                                
+                                <br />
 
                                 <label for="currentOwner">Current Owner</label>
                                 <input 
@@ -233,8 +261,8 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={remarks}
                                 />
 
-                                <button type="submit" className="submit_button">Add</button>
-
+                               <button type="submit" className="submit_button">{updateMode ? 'Update' : 'Add'}</button>
+                            
                             </form>
                         </div>
                     </div>
