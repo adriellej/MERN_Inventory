@@ -15,9 +15,9 @@ body {
 
 .App {
   margin: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: 75px 1fr;
-  gap: 0;
 }
 
 .icon {

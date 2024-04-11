@@ -1,0 +1,106 @@
+/* Modal Container */
+.modal_container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.form_container {
+    position: relative;
+    margin: 5% auto;
+    width: 600px;
+    height: 570px;
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+.close_button {
+    background-color: #072064;
+    color: #eee;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    font-size: 16px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+.close_button:hover {
+    opacity: 1;
+}
+
+.form_header {
+    background-color: #0B2C82;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 15px  15px 0 0;
+}
+
+/* Modal Content */
+.form_content {
+    overflow-y: auto;
+    padding: 15px;
+    height: 450px;
+} 
+
+.form_content::-webkit-scrollbar {
+  width: 5px; /* width of the scrollbar */
+}
+
+.form_content::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color of the track */
+}
+
+.form_content::-webkit-scrollbar-thumb {
+  background: #b6b6b6; /* color of the scrollbar */
+}
+
+.form_content::-webkit-scrollbar-thumb:hover {
+  background: #9E9E9E; /* color of the scrollbar on hover */
+}
+
+/* Form Fields */
+.form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form input[type="text"],
+.form input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.radio-group {
+    border: 1px solid;
+    display: flex; 
+    flex-direction: row;
+    align-items: center; 
+    justify-content: flex-start;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 10px;
+}
+
+
+/* Submit Button */
+.submit_button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

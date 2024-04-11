@@ -4,8 +4,8 @@ import { useContext, useState, useEffect } from 'react';
 
 import { DevicesContext } from '../context/DevicesContext';
 
-const DeviceForm = ({ showModal, onClose }) => {
-    const { dispatch } = useContext(DevicesContext);
+const UpdateForm = ({ showModal, onClose, updateMode, deviceToUpdate  }) => {
+    const { devices, dispatch } = useContext(DevicesContext);
 
     const [inUse, setInUse] = useState(false);
     const [currentOwner, setCurrentOwner] = useState('');
@@ -22,6 +22,28 @@ const DeviceForm = ({ showModal, onClose }) => {
     const [accounts, setAccounts] = useState([]);
     const [notes, setNotes] = useState('');
     const [remarks, setRemarks] = useState('');
+
+    useEffect(() => {
+        if (updateMode && deviceToUpdate) {
+            setInUse(deviceToUpdate.inUse);
+            setCurrentOwner(deviceToUpdate.currentOwner);
+            setSerialNumber(deviceToUpdate.serialNumber);
+            setBrand(deviceToUpdate.brand);
+            setIssuedDateToCurrentOwner(deviceToUpdate.issuedDateToCurrentOwner);
+            setCompany(deviceToUpdate.company);
+            setDepartment(deviceToUpdate.department);
+            setModel(deviceToUpdate.model);
+            setProcessor(deviceToUpdate.processor);
+            setRAM(deviceToUpdate.ram);
+            setStorage(deviceToUpdate.storage);
+            setPurchasedDate(deviceToUpdate.purchasedDate);
+            setAccounts(deviceToUpdate.accounts);
+            setNotes(deviceToUpdate.notes);
+            setRemarks(deviceToUpdate.remarks);
+        } else {
+            resetFormFields();
+        }
+    }, [updateMode, deviceToUpdate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,8 +66,10 @@ const DeviceForm = ({ showModal, onClose }) => {
             remarks,
         };
 
-        const response = await fetch('/api/inventory/', {
-                method: 'POST',
+        let response;
+
+        response = await fetch(`/api/inventory/${deviceToUpdate._id}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -58,8 +82,7 @@ const DeviceForm = ({ showModal, onClose }) => {
             return;
         }
 
-        dispatch({ type: 'CREATE_DEVICE', payload: json });
-        resetFormFields();
+        dispatch({ type: 'UPDATE_DEVICE', payload: json });
         onClose(); // Close the modal
     };
 
@@ -83,20 +106,18 @@ const DeviceForm = ({ showModal, onClose }) => {
 
     return (
         <div>
-            {showModal && (
+            {showModal && updateMode && deviceToUpdate && (
                 <div className="modal_container">
                     <div className="form_container">
                         <button onClick={onClose} className="close_button">x</button>
+                            
+                        <h1 className="form_header">Update Item</h1>                        
 
-                        <h1 className="form_header">New Item</h1>
-              
                         <div className="form_content">
                             <form className="form" onSubmit={handleSubmit}>
                                 <label htmlFor="inUse">In-Use?</label>
                                 
                                 <span className="radio-group">
-
-                                <label> 
                                 <input 
                                     type="radio" 
                                     name="inUse" 
@@ -104,9 +125,6 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     checked={inUse === true}
                                     onChange={(e) => setInUse(true)}
                                 />Yes
-                                </label>
-
-                                <label>
                                 <input 
                                     type="radio" 
                                     name="inUse" 
@@ -115,12 +133,11 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     onChange={(e) => setInUse(false)}
                                     selected
                                 />No
-                                </label>
                                 </span>
                                 
                                 <br />
 
-                                <label htmlFor="currentOwner">Current Owner</label>
+                                <label for="currentOwner">Current Owner</label>
                                 <input 
                                     type="text" 
                                     name="currentOwner" 
@@ -128,7 +145,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={currentOwner}
                                 />
                                 
-                                <label htmlFor="serialNumber">Serial Number</label>
+                                <label for="serialNumber">Serial Number</label>
                                 <input 
                                     type="text" 
                                     name="serialNumber" 
@@ -136,7 +153,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={serialNumber}
                                 />
                                 
-                                <label htmlFor="brand">Brand</label>
+                                <label for="brand">Brand</label>
                                 <input 
                                     type="text" 
                                     name="brand" 
@@ -144,7 +161,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={brand}
                                 />
 
-                                <label htmlFor="issuedDateToCurrentOwner">Issued Date to Owner</label>
+                                <label for="issuedDateToCurrentOwner">Issued Date to Owner</label>
                                 <input 
                                     type="date" 
                                     name="issuedDateToCurrentOwner" 
@@ -152,7 +169,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={issuedDateToCurrentOwner}
                                 />
 
-                                <label htmlFor="company">Company</label>
+                                <label for="company">Company</label>
                                 <input 
                                     type="text" 
                                     name="company" 
@@ -160,7 +177,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={company}
                                 />
 
-                                <label htmlFor="department">Department</label>
+                                <label for="department">Department</label>
                                 <input 
                                     type="text" 
                                     name="department" 
@@ -168,7 +185,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={department}
                                 />
 
-                                <label htmlFor="model">Model</label>
+                                <label for="model">Model</label>
                                 <input 
                                     type="text" 
                                     name="model" 
@@ -176,7 +193,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={model}
                                 />
 
-                                <label htmlFor="processor">Processor</label>
+                                <label for="processor">Processor</label>
                                 <input 
                                     type="text" 
                                     name="processor" 
@@ -184,7 +201,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={processor}
                                 />
 
-                                <label htmlFor="ram">RAM</label>
+                                <label for="ram">RAM</label>
                                 <input 
                                     type="text" 
                                     name="ram" 
@@ -192,7 +209,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={ram}
                                 />
 
-                                <label htmlFor="storage">Storage</label>
+                                <label for="storage">Storage</label>
                                 <input 
                                     type="text" 
                                     name="storage" 
@@ -200,7 +217,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={storage}
                                 />
 
-                                <label htmlFor="purchasedDate">Purchased Date</label>
+                                <label for="purchasedDate">Purchased Date</label>
                                 <input 
                                     type="date" 
                                     name="purchasedDate" 
@@ -208,7 +225,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={purchasedDate}
                                 />
 
-                                <label htmlFor="accounts">Accounts</label>
+                                <label for="accounts">Accounts</label>
                                 <input 
                                     type="text" 
                                     name="accounts" 
@@ -216,7 +233,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={accounts}
                                 />
 
-                                <label htmlFor="notes">Notes</label>
+                                <label for="notes">Notes</label>
                                 <input 
                                     type="text" 
                                     name="notes" 
@@ -224,7 +241,7 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={notes}
                                 />
 
-                                <label htmlFor="remarks">Remarks</label>
+                                <label for="remarks">Remarks</label>
                                 <input 
                                     type="text" 
                                     name="remarks" 
@@ -232,11 +249,10 @@ const DeviceForm = ({ showModal, onClose }) => {
                                     value={remarks}
                                 />
 
-                                <button type="submit" className="submit_button">Add</button>
+                               <button type="submit" className="submit_button">Update</button>
                             
                             </form>
                         </div>
-                      
                     </div>
                 </div>
             )}
@@ -244,4 +260,4 @@ const DeviceForm = ({ showModal, onClose }) => {
     );
 };
 
-export default DeviceForm;
+export default UpdateForm;

@@ -5,12 +5,14 @@ import { DevicesContext } from "../context/DevicesContext";
 import SearchBar from "../components/SearchBar";
 import DeviceDetails from "../components/DeviceDetails";
 import DeviceForm from "../components/DeviceForm";
+import UpdateForm from "../components/UpdateForm";
 
 import { TrashIcon, PlusIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const Devices = () => {
     const { devices, dispatch } = useContext(DevicesContext);
-    const [showModal, setShowModal] = useState(false);
+    const [showAddItemModal, setShowAddItemModal] = useState(false);
+    const [showUpdateItemModal, setShowUpdateItemModal] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [selectedDeviceIds, setSelectedDeviceIds] = useState([]);
     const [deviceToUpdate, setDeviceToUpdate] = useState({});
@@ -64,26 +66,13 @@ const Devices = () => {
     }, [dispatch]);
 
 
-    const toggleModal = () => {
-        setShowModal(!showModal); // Toggle modal visibility
+    const toggleAddItemModal = () => {
+        setShowAddItemModal(!showAddItemModal); // Toggle modal visibility
     };
 
-    const closeModal = () => {
-        setShowModal(false);
+    const closeAddItemModal = () => {
+        setShowAddItemModal(false);
     };
-
-    // const updating = () => {
-    //     // Set isUpdating state to true to indicate update mode
-    //     setIsUpdating(true);
-
-    //     // Open the modal
-    //     setShowModal(true);
-    // }
-
-    // const updateData = (deviceId) => {
-    //     return deviceId;
-    //     // console.log(deviceId)
-    // }
 
     const handleCheckboxChange = (deviceId) => {
         setSelectedDeviceIds(prevState => {
@@ -97,12 +86,6 @@ const Devices = () => {
 
     const handleUpdate = async () => {
         const deviceId = selectedDeviceIds[0];
-        // const device = devices.find(device => device._id === deviceId);
-        // if (device) {
-        //     setDeviceToUpdate(device);
-        //     setIsUpdating(true);
-        //     setShowModal(true);
-        // }
         const response = await fetch(`/api/inventory/${deviceId}`, {
             method: 'GET',
             headers: {
@@ -115,13 +98,13 @@ const Devices = () => {
         if (response.ok) {
             setDeviceToUpdate(device);
             setIsUpdating(true);
-            setShowModal(true);
+            setShowUpdateItemModal(true);
         }
     };
 
-
-    console.log(selectedDeviceIds);
-    console.log(deviceToUpdate)
+    const closeUpdateItemModal = () => {
+        setShowUpdateItemModal(false);
+    };
 
     return (
         <div className="devices">
@@ -139,7 +122,7 @@ const Devices = () => {
                                 <button className="icon" onClick={handleDelete}>
                                     <TrashIcon /> 
                                 </button>
-                                <button className="icon" onClick={toggleModal}>
+                                <button className="icon" onClick={toggleAddItemModal}>
                                     <PlusIcon />
                                 </button>
                             </div>
@@ -186,7 +169,8 @@ const Devices = () => {
                     </div>
                 </div>
             </div>
-            <DeviceForm showModal={showModal} onClose={closeModal} updateMode={isUpdating} deviceToUpdate={deviceToUpdate} />
+            <DeviceForm showModal={showAddItemModal} onClose={closeAddItemModal} />
+            <UpdateForm showModal={showUpdateItemModal} onClose={closeUpdateItemModal} updateMode={isUpdating} deviceToUpdate={deviceToUpdate} />
         </div>
     );
 }
