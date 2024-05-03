@@ -50,6 +50,7 @@
     height: 450px;
 } 
 
+/* Webkit (Chrome, Safari, Opera) */
 .form_content::-webkit-scrollbar {
   width: 5px; /* width of the scrollbar */
 }
@@ -64,6 +65,18 @@
 
 .form_content::-webkit-scrollbar-thumb:hover {
   background: #9E9E9E; /* color of the scrollbar on hover */
+}
+
+
+/* Firefox */
+.form_content {
+  scrollbar-width: thin; /* width of the scrollbar */
+  scrollbar-track-color: #f1f1f1; /* color of the track */
+  scrollbar-face-color: #b6b6b6; /* color of the scrollbar */
+}
+
+.form_content:hover {
+  scrollbar-face-color: #9E9E9E; /* color of the scrollbar on hover */
 }
 
 /* Form Fields */
@@ -83,11 +96,11 @@
 }
 
 .radio-group {
-    border: 1px solid;
     display: flex; 
     flex-direction: row;
     align-items: center; 
     justify-content: flex-start;
+    gap:35px;
 }
 
 .radio-group input[type="radio"] {
